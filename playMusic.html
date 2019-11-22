@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>音乐播放器</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            background: url("images/dream.jpg");
+            background-size: cover;
+            font-size: 12px;
+            font-family: "微软雅黑";
+        }
+
+        .parent {
+            width: 320px;
+            margin: 0 auto;
+            height: 100%;
+            box-sizing: border-box;
+        }
+
+        .parent .phone_top {
+            background: url("images/phone_top.png");
+            background-size: cover;
+            height: 42px;
+        }
+
+        .phone_info,
+        .phone_body {
+            border-left: 1px #fff solid;
+            border-right: 1px #fff solid;
+        }
+
+        .parent .phone_info {
+            background: url("images/phone_info.png");
+            height: 20px;
+        }
+
+        .parent .title {
+            position: relative;
+            text-align: center;
+            font-size: 16px;
+            color: #fff;
+            height: 32px;
+            line-height: 32px;
+            border-right: 1px solid #fff;
+            border-left: 1px solid #fff;
+            background: rgba(0, 0, 0, 0.404);
+        }
+
+        .parent .title #music_logo {
+            position: absolute;
+            top: 50px;
+            right: 30px;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+        }
+
+        .phone_body {
+            overflow: auto;
+        }
+
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 2px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track-piece {
+            background: #fff;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: rgb(116, 113, 113);
+            border-radius: 6px;
+        }
+
+        scrollbarbutton {
+            display: none !important;
+        }
+
+        .phone_bg {
+            width: 100%;
+        }
+
+        .phone_bg li {
+            width: 320px;
+            height: 418px;
+            position: absolute;
+            opacity: 0;
+            z-index: -1;
+        }
+
+        .change {
+            animation: play 1.5s infinite linear;
+        }
+
+        @keyframes play {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .phone_body .lyric li {
+            height: 28px;
+            line-height: 28px;
+            padding-left: 20px;
+            list-style: none;
+            font-size: 14px;
+            color: #fff;
+            transition: font-size .5s ease;
+        }
+
+        .phone_body .lyric li.select {
+            font-size: 20px;
+            padding-left: 25px;
+            color: rgb(255, 135, 88);
+            text-shadow: 0.1em 0.1em 0.2em black
+        }
+
+        .phone_bottom {
+            background-image: url("images/phone_bottom.png");
+            height: 67px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="parent">
+        <div class="phone_top"></div>
+        <div class="phone_info"></div>
+        <div class="title">
+            同桌的你
+            <span id="music_logo"><img src="images/music.png" width="30" height="30"></span>
+        </div>
+        <div class="phone_body" style="height: 418px;">
+            <ul class="phone_bg">
+                <li class="bg_1"></li>
+                <li class="bg_2"></li>
+                <li class="bg_3"></li>
+                <li class="bg_4"></li>
+                <li class="bg_5"></li>
+                <li class="bg_6"></li>
+            </ul>
+        </div>
+        <div class="phone_bottom"></div>
+    </div>
+    <script src="js/jquery.min.js"></script>
+    <script>
+        $(function () {
+            var music = document.createElement("audio");
+            music.src = "music/My_deskmate.mp3";
+            music.autoplay = "autoplay";
+            music.controls = "controls";
+            music.loop = "loop";
+
+            var close = false;
+            // 点击暂停
+            $("#music_logo").click(function () {
+                if (close) {
+                    music.pause();
+                    $(this).removeClass("change");
+                    close = false;
+                } else {
+                    close = true;
+                    music.play();
+                    $(this).addClass("change");
+                }
+            });
+
+            // 获取歌词
+            var lyric = `
+                [00:01]
+                [00:01]
+                [00:01]
+                [00:01]
+                [00:01]
+                [00:01]
+                [00:01]
+                [00:02]同桌的你
+                [00:03]演唱：老狼
+                [00:04]词曲：高晓松
+                [00:06]专辑：《校园民谣第一辑》
+                [00:08]吉它 贝斯：REY INFANTE
+                [00:10]弦乐：中央乐团
+                [00:12]口琴：杨乐
+                [00:14]
+                [00:16]明天你是否会想起
+                [00:20]昨天你写的日记
+                [00:23]明天你是否还惦记
+                [00:27]曾经最爱哭的你
+                [00:29]
+                [00:31]老师们都已想不起
+                [00:35]猜不出问题的你
+                [00:39]我也是偶然翻相片
+                [00:42]才想起同桌的你
+                [00:46]谁娶了多愁善感的你
+                [00:50]谁看了你的日记
+                [00:54]谁把你的长发盘起
+                [00:58]谁给你做的嫁衣
+                [01:15]
+                [01:17]你从前总是很小心
+                [01:21]问我借半块橡皮
+                [01:24]你也曾无意中说起
+                [01:28]喜欢跟我在一起
+                [01:32]那时候天总是很蓝
+                [01:36]日子总过得太慢
+                [01:40]你总说毕业遥遥无期
+                [01:43]转眼就各奔东西
+                [01:48]谁遇到多愁善感的你
+                [01:51]谁安慰爱哭的你
+                [01:55]谁看了我给你写的信
+                [01:59]谁把它丢在风里
+                [02:14]
+                [02:18]从前的日子都远去
+                [02:22]我也将有我的妻
+                [02:25]我也会给她看相片
+                [02:29]给她讲同桌的你
+                [02:33]谁娶了多愁善感的你
+                [02:37]谁安慰爱哭的你
+                [02:41]谁把你的长发盘起
+                [02:44]谁给你做的嫁衣
+                [02:49]啦 啦 啦 啦 啦 啦 啦 啦
+                [02:52]啦 啦 啦 啦 啦 啦 啦 啦
+                [02:57]啦 啦 啦 啦 啦 啦 啦 啦
+                [03:00]啦 啦 啦 啦 啦 啦 啦 啦
+                [03:04]啦 啦 啦 啦 啦 啦 啦 啦
+                [03:07]啦 啦 啦 啦 啦 啦 啦 啦
+                [03:11]啦 啦 啦 啦 啦 啦 啦 啦
+                [03:15]啦 啦 啦 啦 啦 啦 啦 啦
+                [03:21]
+                [04:17]
+                [04:17]
+                [04:17]
+                [04:17]
+                [04:17]
+                [04:17]
+            `;
+            //第一次分离歌词，把[分离，得到一个新的数组["00:00]","同桌的你"]
+            var lyric_first = lyric.split("[");
+
+            var html = "<ul class='lyric'>";
+            for (var i = 0; i < lyric_first.length; i++) {
+                //第二次分割，以]分割，获得数组["00:00","同桌的你"]
+                var lyric_second = lyric_first[i].split("]");
+                //歌词
+                var lyric_msg = lyric_second[1];
+                //分钟和秒["00,"00"]
+                var stime = lyric_second[0].split(":");
+                //把时间转换成秒
+                var change_time = stime[0] * 60 + stime[1] * 1;
+
+                if (lyric_msg) {
+                    html += "<li id='" + change_time + "'>" + lyric_msg + "</li>";
+                }
+
+            }
+            html += "</ul>";
+            //将歌词放入到phone_body
+            $(".phone_body").append(html);
+
+            // 手机的高减去上边和下边以及状态栏
+            var par_width = $(".parent").height() - 129;
+            var flag = 0
+            // 实现联动
+            music.addEventListener("timeupdate", function () {
+                //计算歌词显示的高度
+                var harfHeight = par_width / 2;
+                //获取当前播放时间
+                var cutime = this.currentTime;
+
+                //驱动歌词
+                var s = parseInt(cutime);
+                for (var i = 0; i < s; i++) {
+                    $("#" + s).addClass("select")
+                        .siblings().removeClass("select");
+                }
+                if (cutime < 2) {
+                    $(".phone_body").animate({
+                        scrollTop: 0
+                    }, 100);
+                } else {
+                    var scrollTop = ($(".select").index() + 1) * 28 - harfHeight;
+                    if (flag != scrollTop) {
+                        $(".phone_body").animate({
+                            scrollTop: ($(".select").index() + 1) * 28 - harfHeight
+                        }, 100);
+                        flag = scrollTop;
+                    }
+                }
+            });
+
+            setbg();
+            //设置背景图片
+            function setbg() {
+                //更换图片
+                for (var i = 1; i < 6; i++) {
+                    $(".bg_" + i).css({
+                        background: "url('images/" + i + ".jpg')",
+                        backgroundSize: "cover",
+                    });
+                }
+            }
+
+            //让背景图片定时更换
+            var Index = 0;
+            setInterval(function () {
+                Index++;
+                if (Index > 4)
+                    Index = 0;
+                $(".phone_body ul li")
+                    .eq(Index)
+                    .show()
+                    .animate({ "opacity": 0.5 }, 1500)
+                    .siblings()
+                    .animate({ "opacity": 0 }, 1500);
+            }, 5000);
+        });
+    </script>
+</body>
+
+</html>
